@@ -1,108 +1,87 @@
-<!DOCTYPE html> 
-<html lang="zh-CN"> 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机浏览器视觉效果示例</title>
+    <style>
+        /* 设置页面背景 */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a       ;
+ }
  
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>星空动画</title> 
-    <style> 
-        body { 
-            margin: 0; 
- padding           : 0; 
-            overflow: hidden; 
-            background-color: black; 
-        } 
+        /* 定义旋转方块的样式 */
+        .box {
+            width: 150px;
+            height: 150px;
+            background: #ff6b6b;
+            position: relative;
+            animation: rotate 4s linear infinite;
+            border-radius: 10px;
+        }
  
-        canvas { 
-            display: block; 
-        } 
-    </style> 
-</head> 
+        /* 定义旋转动画 */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
  
-<body> 
-    <canvas id="starCanvas" width="100vw" height="100vh"></canvas> 
-    <script> 
-        const canvas = document.getElementById('starCanvas'); 
-        const ctx = canvas.getContext('2d'); 
+        /* 定义文字样式 */
+        .text {
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
  
-        let stars = []; 
-        let meteors = []; 
+        /* 定义按钮 */
+样式        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+ cursor           : pointer;
+            margin-top: 10px;
+        }
  
-        // 初始化星星 
-        function initStars() { 
-            for (let i = 0; i < 200; i++) { 
-                let star = { 
-                    x: Math.random() * canvas.width, 
-                    y: Math.random() * canvas.height, 
-                    size: Math.random() * 2 + 1, 
-                    speed: Math.random() * 0.5 + 0.1 
-                }; 
-                stars.push(star); 
-            } 
-        } 
+        /* 按钮悬停效果 */
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <!-- 旋转方块 -->
+    <div class="box" id="colorBox"></div>
  
-        // 初始化流星 
-        function initMeteors() { 
-            for (let i = 0; i < 10; i++) { 
-                let meteor = { 
-                    x: Math.random() * canvas.width, 
-                    y: -10, 
-                    size: Math.random() * 3 + 2, 
-                    speed: Math.random() * 2 + 1, 
-                    angle: Math.random() * 2 * Math.PI 
-                }; 
-                meteors.push(meteor); 
-            } 
-        } 
+    <!-- 文字 -->
+    <div class="text">
+        点击下方按钮<br>改变方块颜色 
+    </div>
  
-        // 绘制星星 
-        function drawStars() { 
-            ctx.beginPath(); 
-            for (let star of stars) { 
-                ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI); 
-                ctx.fillStyle = 'white'; 
-                ctx.fill(); 
+    <!-- 按钮 -->
+    <button class="button" onclick="changeColor()">改变颜色</button>
  
-                star.y += star.speed; 
-                if (star.y > canvas.height) { 
-                    star.y = 0; 
-                    star.x = Math.random() * canvas.width; 
-                } 
-            } 
-            ctx.closePath(); 
-        } 
- 
-        // 绘制流星 
-        function drawMeteors() { 
-            ctx.beginPath(); 
-            for (let meteor mete ofors) { 
-                ctxarc.(meteor.x, meteor.y, meteor.size, 0, 2 * Math.PI); 
-                ctx.fillStyle = 'yellow'; 
-                ctx.fill(); 
- 
-                meteor.x += Math.cos(meteor.angle) * meteor.speed; 
-                meteor.y += Math.sin(mete.orangle) * meteor.speed; 
- 
-                if (meteor.y > canvas.height || meteor.x < 0 || meteor.x > canvas.width {) 
-                    meteor.x = Math.random() * canvas.width; 
-                    meteor.y = -10; 
-                    meteor.angle = Math.random() * 2 * Math.PI; 
-                } 
-            } 
-            ctx.closePath(); 
-        } 
- 
-        function animate() { 
-            ctx.clearRect(0, 0, canvas.width, canvas.height); 
-            drawStars(); 
-            drawMeteors(); 
-            requestAnimationFrame(animate); 
-        } 
- 
-        initStars(); 
-        initMeteors(); 
-        animate(); 
-    </script> 
-</body> 
- 
+    <>
+script        // 改变方块颜色的函数 
+        function changeColor() {
+            const colors = ['#ff6b6b', '#4CAF50', '#2196F3', '#9C27B0'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.getElementById('colorBox').style.backgroundColor = randomColor;
+        }
+    </script>
+</body>
 </html>
