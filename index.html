@@ -1,63 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <title>匿名留言板</title>
-  <!-- 引入 Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视觉效果演示</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+ 
+        body {
+            background: linear-gradient(45deg, #1a1a1a, #4a4a4a);
+            color: white;
+            overflow-x: hidden;
+        }
+ 
+        /* 动态背景效果 */
+        .background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+        }
+ 
+        /* 标题动画 */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+ 
+        .animate-title {
+            font-size: 3em;
+            text-align: center;
+            animation: fadeInOut 3s infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+ 
+        @keyframes fadeInOut {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+ 
+        /* 悬浮按钮 */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+ 
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+ 
+        /* 卡片式布局 */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+ 
+        .card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+ 
+        .card:hover {
+            transform: translateY(-10px);
+        }
+ 
+        /* 交互式元素 */
+        .interactive-box {
+            width: 100%;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+ 
+        .interactive-box:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+ 
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .animate-title {
+                font-size: 2em;
+            }
+ 
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>匿名留言板</h1>
-  
-  <!-- 留言输入框 -->
-  <textarea id="message" placeholder="输入留言..."></textarea>
-  <button onclick="submitMessage()">提交</button>
-  
-  <!-- 留言展示区域 -->
-  <div id="messages"></div>
-
-  <script>
-    // 替换为你的 Firebase 配置
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // 初始化 Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // 提交留言到数据库
-    async function submitMessage() {
-      const message = document.getElementById('message').value;
-      await db.collection('messages').add({
-        text: message,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      document.getElementById('message').value = "";
-    }
-
-    // 实时监听留言更新
-    db.collection('messages')
-      .orderBy('timestamp', 'desc')
-      .onSnapshot((snapshot) => {
-        const messagesDiv = document.getElementById('messages');
-        messagesDiv.innerHTML = "";
-        snapshot.forEach(doc => {
-          const msg = doc.data().text;
-          messagesDiv.innerHTML += `<p>${msg}</p><hr>`;
+    <!-- 动态背景 -->
+    <div class="background"></div>
+ 
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 动画标题 -->
+        <h1 class="animate-title">欢迎来到视觉世界</h1>
+ 
+        <!-- 卡片容器 -->
+        <div class="card-container">
+            <div class="card">
+                <h2>卡片 1</h2>
+                <p>这是一个具有 hover 效果的卡片。</p>
+            </div>
+            <div class="card">
+                <h2>卡片 2</h2>
+                <p>卡片内容可以自由扩展。</p>
+            </div>
+            <div class="card">
+                <h2>卡片 3</h2>
+                <p>卡片支持响应式布局。</p>
+            </div>
+        </div>
+ 
+        <!-- 交互式盒子 -->
+        <div class="interactive-box">
+            <h2>点击我！</h2>
+        </div>
+    </div>
+ 
+    <!-- 悬浮按钮 -->
+    <div class="floating-btn">
+        ↑ 
+    </div>
+ 
+    <script>
+        // 添加粒子效果 
+        function createParticles() {
+            const container = document.querySelector('.background');
+            for (let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.backgroundColor = 'rgba(255,255,255,0.8)';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `move ${Math.random() * 5 + 3}s infinite`;
+                container.appendChild(particle);
+            }
+        }
+ 
+        // 粒子动画 
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100vw, -100vh); }
+        }
+ 
+        // 初始化粒子效果 
+        createParticles();
+ 
+        // 交互式盒子点击事件 
+        document.querySelector('.interactive-box').addEventListener('click', () => {
+            alert('你点击了我！😊');
         });
-      });
-  </script>
-
-  <style>
-    body { max-width: 600px; margin: 20px auto; padding: 10px; }
-    textarea { width: 100%; height: 80px; margin: 10px 0; }
-    button { padding: 8px 20px; background: #007bff; color: white; border: none; }
-  </style>
+    </script>
 </body>
 </html>
