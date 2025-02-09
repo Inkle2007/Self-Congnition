@@ -1,192 +1,108 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>视觉效果演示</title>
-    <style>
-        /* 基础样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
+<!DOCTYPE html> 
+<html lang="zh-CN"> 
  
-        body {
-            background: linear-gradient(45deg, #1a1a1a, #4a4a4a);
-            color: white;
-            overflow-x: hidden;
-        }
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>星空动画</title> 
+    <style> 
+        body { 
+            margin: 0; 
+ padding           : 0; 
+            overflow: hidden; 
+            background-color: black; 
+        } 
  
-        /* 动态背景效果 */
-        .background {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            pointer-events: none;
-        }
+        canvas { 
+            display: block; 
+        } 
+    </style> 
+</head> 
  
-        /* 标题动画 */
-        .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+<body> 
+    <canvas id="starCanvas" width="100vw" height="100vh"></canvas> 
+    <script> 
+        const canvas = document.getElementById('starCanvas'); 
+        const ctx = canvas.getContext('2d'); 
  
-        .animate-title {
-            font-size: 3em;
-            text-align: center;
-            animation: fadeInOut 3s infinite;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
+        let stars = []; 
+        let meteors = []; 
  
-        @keyframes fadeInOut {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        // 初始化星星 
+        function initStars() { 
+            for (let i = 0; i < 200; i++) { 
+                let star = { 
+                    x: Math.random() * canvas.width, 
+                    y: Math.random() * canvas.height, 
+                    size: Math.random() * 2 + 1, 
+                    speed: Math.random() * 0.5 + 0.1 
+                }; 
+                stars.push(star); 
+            } 
+        } 
  
-        /* 悬浮按钮 */
-        .floating-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+        // 初始化流星 
+        function initMeteors() { 
+            for (let i = 0; i < 10; i++) { 
+                let meteor = { 
+                    x: Math.random() * canvas.width, 
+                    y: -10, 
+                    size: Math.random() * 3 + 2, 
+                    speed: Math.random() * 2 + 1, 
+                    angle: Math.random() * 2 * Math.PI 
+                }; 
+                meteors.push(meteor); 
+            } 
+        } 
  
-        .floating-btn:hover {
-            transform: scale(1.1);
-        }
+        // 绘制星星 
+        function drawStars() { 
+            ctx.beginPath(); 
+            for (let star of stars) { 
+                ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI); 
+                ctx.fillStyle = 'white'; 
+                ctx.fill(); 
  
-        /* 卡片式布局 */
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
+                star.y += star.speed; 
+                if (star.y > canvas.height) { 
+                    star.y = 0; 
+                    star.x = Math.random() * canvas.width; 
+                } 
+            } 
+            ctx.closePath(); 
+        } 
  
-        .card {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-        }
+        // 绘制流星 
+        function drawMeteors() { 
+            ctx.beginPath(); 
+            for (let meteor mete ofors) { 
+                ctxarc.(meteor.x, meteor.y, meteor.size, 0, 2 * Math.PI); 
+                ctx.fillStyle = 'yellow'; 
+                ctx.fill(); 
  
-        .card:hover {
-            transform: translateY(-10px);
-        }
+                meteor.x += Math.cos(meteor.angle) * meteor.speed; 
+                meteor.y += Math.sin(mete.orangle) * meteor.speed; 
  
-        /* 交互式元素 */
-        .interactive-box {
-            width: 100%;
-            height: 200px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+                if (meteor.y > canvas.height || meteor.x < 0 || meteor.x > canvas.width {) 
+                    meteor.x = Math.random() * canvas.width; 
+                    meteor.y = -10; 
+                    meteor.angle = Math.random() * 2 * Math.PI; 
+                } 
+            } 
+            ctx.closePath(); 
+        } 
  
-        .interactive-box:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
-        }
+        function animate() { 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            drawStars(); 
+            drawMeteors(); 
+            requestAnimationFrame(animate); 
+        } 
  
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .animate-title {
-                font-size: 2em;
-            }
+        initStars(); 
+        initMeteors(); 
+        animate(); 
+    </script> 
+</body> 
  
-            .card-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- 动态背景 -->
-    <div class="background"></div>
- 
-    <!-- 主容器 -->
-    <div class="container">
-        <!-- 动画标题 -->
-        <h1 class="animate-title">欢迎来到视觉世界</h1>
- 
-        <!-- 卡片容器 -->
-        <div class="card-container">
-            <div class="card">
-                <h2>卡片 1</h2>
-                <p>这是一个具有 hover 效果的卡片。</p>
-            </div>
-            <div class="card">
-                <h2>卡片 2</h2>
-                <p>卡片内容可以自由扩展。</p>
-            </div>
-            <div class="card">
-                <h2>卡片 3</h2>
-                <p>卡片支持响应式布局。</p>
-            </div>
-        </div>
- 
-        <!-- 交互式盒子 -->
-        <div class="interactive-box">
-            <h2>点击我！</h2>
-        </div>
-    </div>
- 
-    <!-- 悬浮按钮 -->
-    <div class="floating-btn">
-        ↑ 
-    </div>
- 
-    <script>
-        // 添加粒子效果 
-        function createParticles() {
-            const container = document.querySelector('.background');
-            for (let i = 0; i < 100; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'absolute';
-                particle.style.width = '2px';
-                particle.style.height = '2px';
-                particle.style.backgroundColor = 'rgba(255,255,255,0.8)';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animation = `move ${Math.random() * 5 + 3}s infinite`;
-                container.appendChild(particle);
-            }
-        }
- 
-        // 粒子动画 
-        @keyframes move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100vw, -100vh); }
-        }
- 
-        // 初始化粒子效果 
-        createParticles();
- 
-        // 交互式盒子点击事件 
-        document.querySelector('.interactive-box').addEventListener('click', () => {
-            alert('你点击了我！😊');
-        });
-    </script>
-</body>
 </html>
