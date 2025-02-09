@@ -1,87 +1,63 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手机浏览器视觉效果示例</title>
-    <style>
-        /* 设置页面背景 */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #1a1a1a       ;
- }
- 
-        /* 定义旋转方块的样式 */
-        .box {
-            width: 150px;
-            height: 150px;
-            background: #ff6b6b;
-            position: relative;
-            animation: rotate 4s linear infinite;
-            border-radius: 10px;
-        }
- 
-        /* 定义旋转动画 */
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
- 
-        /* 定义文字样式 */
-        .text {
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
- 
-        /* 定义按钮 */
-样式        .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
- cursor           : pointer;
-            margin-top: 10px;
-        }
- 
-        /* 按钮悬停效果 */
-        .button:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <title>匿名留言板</title>
+  <!-- 引入 Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
-    <!-- 旋转方块 -->
-    <div class="box" id="colorBox"></div>
- 
-    <!-- 文字 -->
-    <div class="text">
-        点击下方按钮<br>改变方块颜色 
-    </div>
- 
-    <!-- 按钮 -->
-    <button class="button" onclick="changeColor()">改变颜色</button>
- 
-    <>
-script        // 改变方块颜色的函数 
-        function changeColor() {
-            const colors = ['#ff6b6b', '#4CAF50', '#2196F3', '#9C27B0'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            document.getElementById('colorBox').style.backgroundColor = randomColor;
-        }
-    </script>
+  <h1>匿名留言板</h1>
+  
+  <!-- 留言输入框 -->
+  <textarea id="message" placeholder="输入留言..."></textarea>
+  <button onclick="submitMessage()">提交</button>
+  
+  <!-- 留言展示区域 -->
+  <div id="messages"></div>
+
+  <script>
+    // 替换为你的 Firebase 配置
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // 初始化 Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 提交留言到数据库
+    async function submitMessage() {
+      const message = document.getElementById('message').value;
+      await db.collection('messages').add({
+        text: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('message').value = "";
+    }
+
+    // 实时监听留言更新
+    db.collection('messages')
+      .orderBy('timestamp', 'desc')
+      .onSnapshot((snapshot) => {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = "";
+        snapshot.forEach(doc => {
+          const msg = doc.data().text;
+          messagesDiv.innerHTML += `<p>${msg}</p><hr>`;
+        });
+      });
+  </script>
+
+  <style>
+    body { max-width: 600px; margin: 20px auto; padding: 10px; }
+    textarea { width: 100%; height: 80px; margin: 10px 0; }
+    button { padding: 8px 20px; background: #007bff; color: white; border: none; }
+  </style>
 </body>
 </html>
